@@ -231,5 +231,5 @@ export default async function handler(req, res) {
       return send(200, await fn({ req, res, url, body, user, sid, m: match.slice(1) }));
     }
     return send(404, { error: 'Not found' });
-  } catch (e) { send(e.status || 500, { error: e.status ? e.message : 'Server error' }); if (!e.status) console.error(e); }
+  } catch (e) { send(e.status || 500, { error: e.status ? e.message : process.env.VERCEL ? 'Server error' : 'Server error: ' + e.message }); if (!e.status) console.error(e); }
 }
