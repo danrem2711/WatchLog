@@ -218,6 +218,11 @@ export default async function handler(req, res) {
   const url = new URL(req.url, 'http://x');
   const send = (s, o) => { res.statusCode = s; res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(o)); };
   try {
+    if (url.pathname === '/api/health') { // shows which setting is missing; details only when DEBUG_ERRORS is set
+      let db = 'ok';
+      try { await init(); } catch (e) { db = process.env.DEBUG_ERRORS ? e.message : 'failed (set DEBUG_ERRORS=1 to see why)'; }
+      return send(200, { tmdbKey: !!KEY, databaseUrl: !!DB_URL, db });
+    }
     await init();
     const sid = cookies(req).sid;
     const user = sid ? await one('SELECT u.id, u.username, u.role FROM sessions s JOIN users u ON u.id=s.user_id WHERE s.token=? AND u.banned=0', sid) : null;
@@ -231,5 +236,5 @@ export default async function handler(req, res) {
       return send(200, await fn({ req, res, url, body, user, sid, m: match.slice(1) }));
     }
     return send(404, { error: 'Not found' });
-  } catch (e) { send(e.status || 500, { error: e.status ? e.message : process.env.VERCEL ? 'Server error' : 'Server error: ' + e.message }); if (!e.status) console.error(e); }
+  } catch (e) { send(e.status || 500, { error: e.status ? e.message : process.env.VERCEL && !process.env.DEBUG_ERRORS ? 'Server error' : 'Server error: ' + e.message }); if (!e.status) console.error(e); }
 }

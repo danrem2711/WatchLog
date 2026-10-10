@@ -1,6 +1,6 @@
 # WatchLog – Movie & Series Tracker
 
-Vanilla HTML/CSS/JS frontend, a Node serverless API, a Turso (hosted SQLite) database and live data from [TMDB](https://www.themoviedb.org/).
+Vanilla HTML/CSS/JS frontend, a Node serverless API, a Supabase (Postgres) database and live data from [TMDB](https://www.themoviedb.org/).
 
 ## Features
 - Accounts (scrypt-hashed passwords, HttpOnly session cookie)
@@ -34,7 +34,7 @@ Tables are created automatically on the first request, with Row Level Security e
 ## Layout
 ```
 api/index.js   all API routes (Vercel function)
-server.js      local dev server
+dev.js      local dev server
 public/        index.html, style.css, app.js
 vercel.json    static output + /api rewrite
 ```
